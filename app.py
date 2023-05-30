@@ -344,7 +344,7 @@ def messages_show(message_id):
 
 
 @app.route('/messages/<int:message_id>/like', methods=["POST"])
-def messages_liked(message_id):
+def messages_like(message_id):
     """Like or unlike a message."""
 
     if not g.user:
@@ -371,6 +371,21 @@ def messages_liked(message_id):
         flash('Message liked!', 'success')
 
     return redirect(url_for('messages_show', message_id=message_id))
+
+
+@app.route('/messages/<int:user_id>/liked', methods=["GET"])
+def messages_liked(user_id):
+    """Show messages liked by a user."""
+
+    user = User.query.get(user_id)
+
+    if not user:
+        flash('User not found.', 'danger')
+        return redirect('/')
+
+    liked_messages = user.likes
+
+    return render_template('liked.html', liked_messages=liked_messages, liked_user=user)
 
 
 
