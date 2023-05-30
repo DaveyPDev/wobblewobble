@@ -18,7 +18,7 @@
             <a href="/users/{{ user.id }}">@{{ user.username }}</a>
             <span class="text-muted">{{ message.timestamp.strftime('%d %B %Y') }}</span>
             <p>{{ message.text }}</p>
-            <form action="/users/add_like/{{ message.id }}" method="POST" class="like-form">
+            <form action="/messages/add_like/{{ message.id }}" method="POST" class="like-form">
               {% if message in user.likes %}
                 <button type="submit" class="btn btn-danger"> Unliked </button>
               {% else %}

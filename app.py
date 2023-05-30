@@ -1,7 +1,7 @@
 import os
 import pdb
 
-from flask import Flask, render_template, request, flash, redirect, session, g
+from flask import Flask, render_template, request, flash, redirect, session, g, url_for
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
@@ -245,7 +245,34 @@ def profile():
     
     return render_template('/users/profile.html', form=form)
     
+@app.route('/users/add_like/<int:message_id>', methods=["POST"])
+def add_like(message_id):
+    """Add a like to a message."""
 
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/login")
+
+    msg = Message.query.get(message_id)
+
+    if not msg:
+        flash('Message not found.', 'danger')
+        return redirect('/')
+
+    if msg.user_id == g.user.id:
+        flash("You can't like your own message.", "danger")
+        return redirect(f'/messages/show')
+
+    if msg in g.user.likes:
+        g.user.likes.remove(msg)
+        db.session.commit()
+        flash('Message unliked.', 'danger')
+    else:
+        g.user.likes.append(msg)
+        db.session.commit()
+        flash('Message liked!', 'success')
+
+    return redirect(f'/users/{g.user.id}/liked')
 
 
 @app.route('/users/delete', methods=["POST"])
@@ -334,7 +361,7 @@ def messages_liked(message_id):
         db.session.commit()
         flash('Message liked!', 'success')
 
-    return redirect(f'/messages/{message_id}')
+    return redirect(url_for('messages_show', message_id=message_id))
 
 
 
