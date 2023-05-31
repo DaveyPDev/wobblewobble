@@ -1,18 +1,14 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
-  <h1>Messages Liked by {{ liked_user.username }}</h1>
-
-  {% if liked_messages %}
+  <h1>Likes for Message ID: {{ message.id }}</h1>
+  {% if liked_users %}
     <ul>
-      {% for message in liked_messages %}
-        <li>
-          <p>{{ message.text }}</p>
-          <p>Liked by: {{ liked_user.username }}</p>
-        </li>
+      {% for user in liked_users %}
+        <li>{{ user.username }}</li>
       {% endfor %}
     </ul>
   {% else %}
-    <p>No liked messages found for {{ liked_user.username }}.</p>
+    <p>No likes for this message.</p>
   {% endif %}
 {% endblock %}
