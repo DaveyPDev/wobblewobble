@@ -275,14 +275,6 @@ def add_like(message_id):
     return redirect(f'/users/{g.user.id}/liked')
 
 
-@app.route('/users/<int:id>/liked')
-def liked(id):
-    user = User.query.get_or_404(id)
-    liked_messages = user.likes
-
-    return render_template('liked.html', liked_messages=liked_messages, liked_user=user)
-
-
 
 @app.route('/users/delete', methods=["POST"])
 def delete_user():
