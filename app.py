@@ -1,7 +1,7 @@
 import os
 import pdb
 
-from flask import Flask, render_template, request, flash, redirect, session, g, url_for
+from flask import Flask, render_template, request, flash, redirect, session, g, url_for, request
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
@@ -261,7 +261,7 @@ def add_like(message_id):
 
     if msg.user_id == g.user.id:
         flash("You can't like your own message.", "danger")
-        return redirect(f'/messages/show')
+        return redirect(request.referrer)
 
     if msg in g.user.likes:
         g.user.likes.remove(msg)
@@ -272,7 +272,7 @@ def add_like(message_id):
         db.session.commit()
         flash('Message liked!', 'success')
 
-    return redirect(f'/users/{g.user.id}/liked')
+    return redirect(request.referrer)
 
 
 @app.route('/users/<int:id>/liked')
@@ -338,9 +338,14 @@ def messages_show(message_id):
 
     msg = Message.query.get(message_id)
 
+    liked = False
+
+    if g.user:
+        liked = g.user.has_liked_message(msg)
+
     if not msg:
         return render_template('404.html'), 404
-    return render_template('messages/show.html', message=msg)
+    return render_template('messages/show.html', message=msg, liked=liked)
 
 
 @app.route('/messages/<int:message_id>/like', methods=["POST"])
@@ -372,35 +377,6 @@ def messages_like(message_id):
 
     return redirect(url_for('messages_show', message_id=message_id))
 
-
-@app.route('/messages/<int:message_id>/like', methods=["POST"])
-def message_liked(message_id):
-    """Like or unlike a message."""
-
-    if not g.user:
-        flash("Access unauthorized.", "danger")
-        return redirect("/login")
-
-    msg = Message.query.get(message_id)
-
-    if not msg:
-        flash('Message not found.', 'danger')
-        return redirect('/')
-
-    if msg.user_id == g.user.id:
-        flash("You can't like your own message.", "danger")
-        return redirect(f'/messages/{message_id}')
-
-    if msg in g.user.likes:
-        g.user.likes.remove(msg)
-        db.session.commit()
-        flash('Message unliked.', 'danger')
-    else:
-        g.user.likes.append(msg)
-        db.session.commit()
-        flash('Message liked!', 'success')
-
-    return redirect(url_for('messages_show', message_id=message_id))
 
 @app.route('/messages/<int:message_id>/likes', methods=["GET"])
 def message_likes(message_id):

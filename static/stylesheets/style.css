@@ -522,6 +522,10 @@ p.card-bio {
   margin-bottom: 10px;
 }
 
+
+
+
+
 /* ================================ 404 page */
 
 .message-404 {
@@ -541,3 +545,41 @@ p.card-bio {
 .message-404 .form-inline input {
   flex: 1;
 }
+
+/* ============================= Likes Button */
+.btn-like {
+  background-color: #1c94e0;
+  color: white;
+}
+
+.btn-like:hover {
+  background-color: #1676b5;
+}
+
+
+.message {
+  display: flex;
+  align-items: flex-start;
+}
+
+.message-content {
+  margin-left: 10px;
+}
+
+.message-details {
+  display: flex;
+  align-items: center;
+}
+
+.message-date {
+  margin-right: 10px;
+}
+
+.like-form {
+  margin-bottom: 0;
+}
+
+.like-button {
+  margin-left: 10px;
+}
+
