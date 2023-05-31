@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Likes for Message ID: {{ message.id }}</h1>
+  <h1>Likes for User: {{ liked_user.username }}</h1>
   {% if liked_users %}
     <ul>
       {% for user in liked_users %}
@@ -9,6 +9,6 @@
       {% endfor %}
     </ul>
   {% else %}
-    <p>No likes for this message.</p>
+    <p>No likes for this user.</p>
   {% endif %}
 {% endblock %}
