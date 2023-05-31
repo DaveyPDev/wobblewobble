@@ -243,7 +243,7 @@ def profile():
         else:
             flash('Invalid password. Please try again', 'danger')
     
-    return render_template('/users/profile.html', form=form)
+    return render_template('users/profile.html', form=form)
     
 @app.route('/users/add_like/<int:message_id>', methods=["POST"])
 def add_like(message_id):
