@@ -245,34 +245,42 @@ def profile():
     
     return render_template('/users/profile.html', form=form)
     
-@app.route('/users/add_like/<int:message_id>', methods=["POST"])
-def add_like(message_id):
-    """Add a like to a message."""
+# @app.route('/users/add_like/<int:message_id>', methods=["POST"])
+# def add_like(message_id):
+#     """Add a like to a message."""
 
-    if not g.user:
-        flash("Access unauthorized.", "danger")
-        return redirect("/login")
+#     if not g.user:
+#         flash("Access unauthorized.", "danger")
+#         return redirect("/login")
 
-    msg = Message.query.get(message_id)
+#     msg = Message.query.get(message_id)
 
-    if not msg:
-        flash('Message not found.', 'danger')
-        return redirect('/')
+#     if not msg:
+#         flash('Message not found.', 'danger')
+#         return redirect('/')
 
-    if msg.user_id == g.user.id:
-        flash("You can't like your own message.", "danger")
-        return redirect(f'/messages/show')
+#     if msg.user_id == g.user.id:
+#         flash("You can't like your own message.", "danger")
+#         return redirect(f'/messages/show')
 
-    if msg in g.user.likes:
-        g.user.likes.remove(msg)
-        db.session.commit()
-        flash('Message unliked.', 'danger')
-    else:
-        g.user.likes.append(msg)
-        db.session.commit()
-        flash('Message liked!', 'success')
+#     if msg in g.user.likes:
+#         g.user.likes.remove(msg)
+#         db.session.commit()
+#         flash('Message unliked.', 'danger')
+#     else:
+#         g.user.likes.append(msg)
+#         db.session.commit()
+#         flash('Message liked!', 'success')
 
-    return redirect(f'/users/{g.user.id}/liked')
+#     return redirect(f'/users/{g.user.id}/liked')
+
+
+# @app.route('/users/<int:id>/liked')
+# def liked(id):
+#     user = User.query.get_or_404(id)
+#     liked_messages = user.likes
+
+#     return render_template('messages/liked.html', liked_messages=liked_messages, liked_user=user)
 
 
 
@@ -336,36 +344,6 @@ def messages_show(message_id):
 
 
 @app.route('/messages/<int:message_id>/like', methods=["POST"])
-def messages_like(message_id):
-    """Like or unlike a message."""
-
-    if not g.user:
-        flash("Access unauthorized.", "danger")
-        return redirect("/login")
-
-    msg = Message.query.get(message_id)
-
-    if not msg:
-        flash('Message not found.', 'danger')
-        return redirect('/')
-
-    if msg.user_id == g.user.id:
-        flash("You can't like your own message.", "danger")
-        return redirect(f'/messages/{message_id}')
-
-    if msg in g.user.likes:
-        g.user.likes.remove(msg)
-        db.session.commit()
-        flash('Message unliked.', 'danger')
-    else:
-        g.user.likes.append(msg)
-        db.session.commit()
-        flash('Message liked!', 'success')
-
-    return redirect(url_for('messages_show', message_id=message_id))
-
-
-@app.route('/messages/<int:message_id>/like', methods=["POST"])
 def message_liked(message_id):
     """Like or unlike a message."""
 
@@ -393,6 +371,7 @@ def message_liked(message_id):
         flash('Message liked!', 'success')
 
     return redirect(url_for('messages_show', message_id=message_id))
+
 
 @app.route('/messages/<int:message_id>/likes', methods=["GET"])
 def message_likes(message_id):

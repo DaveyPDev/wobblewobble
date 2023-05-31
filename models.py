@@ -48,6 +48,12 @@ class Likes(db.Model):
         unique=True
     )
 
+    likes = db.Column(db.Integer, default=0)
+
+    def increment_likes(self):
+        self.likes += 1
+        db.session.commit()
+
 
 class User(db.Model):
     """User in the system."""
