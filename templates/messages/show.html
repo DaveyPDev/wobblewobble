@@ -29,18 +29,12 @@
                 {% endif %}
               {% endif %}
             </div>
-            <div class="message">
-              <div class="message-content">
-                <p>{{ message.text }}</p>
-                <div class="message-details">
-                  <p class="message-date">{{ message.timestamp }}</p>
-                  <form class="like-form" action="{{ url_for('liked', id=message.id) }}" method="POST">
-                    <button class="btn btn-primary like-button" type="submit">Like</button>
-                  </form>
-                </div>
-              </div>
-              <p class="message-likes">{{ message.like_count }} likes</p>
-            </div>
+            <p class="single-message">{{ message.text }}</p>
+            <span class="text-muted">{{ message.timestamp.strftime('%d %B %Y') }}</span>
+            <form id="like-form" action="/users/add_like/{{ message.id }}" method="post">
+              <button type="submit" class="btn {% if liked %}btn-primary{% else %}btn-secondary{% endif %}">Like</button>
+            </form>
+            <p> #{{ message.like_count }} likes</p>
           </div>
         </li>
       </ul>

@@ -55,9 +55,8 @@
               <button class="
                 btn 
                 btn-sm 
-                {{'btn-primary' if msg.id in likes else 'btn-secondary'}}"
-              >
-                <i class="fa fa-thumbs-up"></i> 
+                {{'btn-primary' if msg.id in likes else 'btn-secondary'}}">
+                <i class="fa fa-thumbs-up{% if liked %} text-primary{% endif %}"></i>
               </button>
             </form>
           </li>

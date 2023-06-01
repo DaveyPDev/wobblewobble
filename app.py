@@ -410,8 +410,38 @@ def messages_destroy(message_id):
 
 
 
+##############################################################################
+# Warble Likes?
 
+@app.route('/warble_like', methods=["POST"])
+def like_warble():
+    user_id = request.form.get('user_id')
+    warble_id = request.form.get('warble_id')
 
+    user = User.query.get(user_id)
+    user.liked_warble_count += 1
+    db.session.comitt()
+
+    like = Like(user_id=user_id, warble_id=warble_id)
+    db.session.add(like)
+    db.session.commit()
+
+    return 'Warble Liked'
+
+@app.route('/unlike_warble', methods=['POST'])
+def unlike_warble():
+    user_id = request.form.get('user_id')
+    warble_id = request.form.get('warble_id')
+
+    user = User.query.get(user_id)
+    user.liked_warbles_count -= 1
+    db.session.commit()
+
+    like = Like.query.filter_by(user_id=user_id, warble_id=warble_id).first()
+    db.session.delete(like)
+    db.session.commit()
+
+    return 'Warble unliked!'
 
 
 ##############################################################################
@@ -433,7 +463,9 @@ def homepage():
                     .limit(100)
                     .all())
 
-        return render_template('home.html', messages=messages)
+        liked_messages = [msg.id for msg in g.user.likes]
+
+        return render_template('home.html', messages=messages, liked_messages=liked_messages)
 
     else:
         return render_template('home-anon.html')
