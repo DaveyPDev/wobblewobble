@@ -48,10 +48,17 @@ class Likes(db.Model):
         unique=True
     )
 
-    likes = db.Column(db.Integer, default=0)
+    likes_count = db.Column(db.Integer, default=0)
+    liked_count = db.Column(db.Integer, default=0)
 
     def increment_likes(self):
-        self.likes += 1
+        self.likes_count += 1
+        db.session.commit()
+        self.message_likes += 1
+        db.session.commit()
+
+    def increment_liked(self):
+        self.liked_count += 1
         db.session.commit()
 
 
@@ -218,6 +225,12 @@ class Message(db.Model):
     )
 
     user = db.relationship('User')
+
+    likes = db.relationship('Likes')
+
+    def __init__(self, text):
+        self.text = text
+        
 
 
 def connect_db(app):

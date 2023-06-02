@@ -474,12 +474,12 @@ p.card-bio {
 /* =========================== Edit Page */
 
 .edit-btn-area {
-  display: flex;
+  display: inline;
   justify-content: space-between;
 }
 
 .edit-btn-area > .btn {
-  width: 48%;
+  width: 31%;
 }
 
 /* =========================== Message Show page */

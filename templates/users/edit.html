@@ -26,10 +26,12 @@
         {{ form.password(placeholder="Enter your password to confirm", class="form-control") }}
 
         <div class="edit-btn-area">
-          <button class="btn btn-success">Edit!</button>
-          <a href="/users/{{ user_id }}" class="btn btn-outline-secondary">Cancel</a>
+          <button class="btn btn-outline-success">Edit!</button>
+          <a href="/users/{{ g.user.id }}" class="btn btn-outline-secondary text-center">Cancel</a>
+          <button class="btn btn-outline-danger ml-2">Delete Profile</button>
         </div>
       </form>
+     
     </div>
   </div>
 

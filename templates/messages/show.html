@@ -34,7 +34,10 @@
             <form id="like-form" action="/users/add_like/{{ message.id }}" method="post">
               <button type="submit" class="btn {% if liked %}btn-primary{% else %}btn-secondary{% endif %}">Like</button>
             </form>
-            <p> #{{ message.like_count }} likes</p>
+            
+            <p>{{ like_count }} likes - <a href="{{ url_for('message_likes', message_id=message.id) }}">View Likes</a></p>
+
+            <p>{{ message.likes|length }} liked - <a href="{{ url_for('liked', id=message.user.id) }}">View Liked Users</a></p>
           </div>
         </li>
       </ul>

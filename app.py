@@ -232,7 +232,6 @@ def profile():
                                  form.password.data)
 
         if user:
-        
             user.username = form.username.data
             user.email = form.email.data
             user.image_url = form.image_url.data
@@ -245,7 +244,7 @@ def profile():
         else:
             flash('Invalid password. Please try again', 'danger')
     
-    return render_template('users/profile.html', form=form, warbles_count=warbles_count)
+    return render_template('users/edit.html', form=form, warbles_count=warbles_count)
     
 @app.route('/users/add_like/<int:message_id>', methods=["POST"])
 def add_like(message_id):
@@ -301,7 +300,7 @@ def delete_user():
     db.session.delete(g.user)
     db.session.commit()
 
-    return redirect("/signup")
+    return redirect("/")
 
 
 ##############################################################################
@@ -347,7 +346,10 @@ def messages_show(message_id):
 
     if not msg:
         return render_template('404.html'), 404
-    return render_template('messages/show.html', message=msg, liked=liked)
+    
+    like_count = len(msg.likes)
+
+    return render_template('messages/show.html', message=msg, liked=liked, like_count=like_count)
 
 
 @app.route('/messages/<int:message_id>/like', methods=["POST"])
@@ -422,7 +424,7 @@ def like_warble():
 
     user = User.query.get(user_id)
     user.liked_warble_count += 1
-    db.session.comitt()
+    db.session.commit()
 
     like = Like(user_id=user_id, warble_id=warble_id)
     db.session.add(like)
