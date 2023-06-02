@@ -129,6 +129,10 @@ class User(db.Model):
         backref=db.backref('liked_by')
     )
 
+    warbles_count = db.Column(db.Integer, default=0)
+
+
+
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
 

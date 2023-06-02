@@ -225,6 +225,8 @@ def profile():
         flash("Access unauthorized.", "danger")
         return redirect("/login")
     
+    warbles_count = user.warbles_count
+    
     if form.validate_on_submit():
         user = User.authenticate(form.username.data,
                                  form.password.data)
@@ -243,7 +245,7 @@ def profile():
         else:
             flash('Invalid password. Please try again', 'danger')
     
-    return render_template('users/profile.html', form=form)
+    return render_template('users/profile.html', form=form, warbles_count=warbles_count)
     
 @app.route('/users/add_like/<int:message_id>', methods=["POST"])
 def add_like(message_id):
