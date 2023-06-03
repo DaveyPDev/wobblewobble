@@ -232,6 +232,7 @@ def profile():
                                  form.password.data)
 
         if user:
+        
             user.username = form.username.data
             user.email = form.email.data
             user.image_url = form.image_url.data

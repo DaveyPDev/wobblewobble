@@ -1,0 +1,27 @@
+Was working up until
+
+**
+On a profile page, it should show how many warblers that user has liked, and this should link to a page showing their liked warbles.
+**
+
+I had a counter working but it was counting likeS and likeD as the same counter
+
+tried adding an alter table messages add likes_count integer default 0
+
+and it wouldn't let me hit enter to alter the table after accessing messages
+
+warbler=# SELECT column_name, data_type
+warbler-# FROM information_schema.columns
+warbler-# WHERE table_name = 'messages';
+ column_name |          data_type          
+-------------+-----------------------------
+ id          | integer
+ text        | character varying
+ timestamp   | timestamp without time zone
+ user_id     | integer
+(4 rows)
+
+warbler=# ALTER TABLE messages
+warbler-# ADD COLUMN likes_count INTEGER DEFAULT 0;
+
+
