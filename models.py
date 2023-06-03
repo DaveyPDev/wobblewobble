@@ -44,17 +44,18 @@ class Likes(db.Model):
 
     message_id = db.Column(
         db.Integer,
-        db.ForeignKey('messages.id', ondelete='cascade'),
-        unique=True
+        db.ForeignKey('messages.id', ondelete='cascade')
     )
 
     likes_count = db.Column(db.Integer, default=0)
     liked_count = db.Column(db.Integer, default=0)
 
-    def increment_likes(self):
+    def increment_likes(self, user):
+        if user.id == self.message.user_id:
+            return
+
         self.likes_count += 1
-        db.session.commit()
-        self.message_likes += 1
+        self.message.likes_count += 1
         db.session.commit()
 
     def increment_liked(self):
@@ -144,18 +145,16 @@ class User(db.Model):
         return f"<User #{self.id}: {self.username}, {self.email}>"
 
     def is_followed_by(self, other_user):
-        """Is this user followed by `other_user`?"""
         found_user_list = [user for user in self.followers if user == other_user]
         return len(found_user_list) == 1
 
     def is_following(self, other_user):
-        """Is this user following `other_user`?"""
         found_user_list = [user for user in self.following if user == other_user]
         return len(found_user_list) == 1
 
     def has_liked_message(self, message):
-        """Check if the user has liked the given message."""
-        return message in self.likes
+        return Likes.query.filter_by(user_id=self.id, message_id=message.id).first() is not None
+
 
     @classmethod
     def signup(cls, username, email, password, image_url):

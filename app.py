@@ -393,8 +393,8 @@ def message_likes(message_id):
         return redirect('/')
 
     liked_users = User.query.join(Likes).filter(Likes.message_id == message_id).all()
-
-    return render_template('messages/liked.html', liked_users=liked_users, message=msg)
+    
+    return render_template('messages/liked.html', liked_users=liked_users, liked_user=msg.user)
 
 
 
