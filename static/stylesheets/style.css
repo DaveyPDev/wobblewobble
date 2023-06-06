@@ -383,6 +383,12 @@ p.card-bio {
   margin: 2em 10px 0;
 }
 
+.card {
+  margin-top: 20px;
+  margin-bottom: 20px; /* Adds spacing between cards */
+}
+
+
 /* ============================ Signed out home */
 
 .home-hero {

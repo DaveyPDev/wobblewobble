@@ -6,45 +6,32 @@
       <ul class="list-group" id="messages">
 
         {% for message in messages %}
+  <li class="list-group-item">
+    <a href="/messages/{{ message.id }}" class="message-link">
+      <a href="/users/{{ user.id }}">
+        <img src="{{ user.image_url }}" alt="user image" class="timeline-image">
+      </a>
 
-          <li class="list-group-item">
-            <a href="/messages/{{ message.id }}" class="message-link"/>
+      <div class="message-area">
+        <a href="/users/{{ user.id }}">@{{ user.username }}</a>
+        <span class="text-muted">{{ message.timestamp.strftime('%d %B %Y') }}</span>
+        <p>{{ message.text }}</p>
+        <p>
+          <a href="{{ url_for('message_likes', message_id=message.id) }}">
+            {{ message.like_count }} likes
+          </a>
+        </p>
 
-            <a href="/users/{{ user.id }}">
-              <img src="{{ user.image_url }}" alt="user image" class="timeline-image">
-            </a>
-
-            <div class="message-area">
-              <a href="/users/{{ user.id }}">@{{ user.username }}</a>
-              <span class="text-muted">{{ message.timestamp.strftime('%d %B %Y') }}</span>
-              <p>{{ message.text }}</p>
-
-              <!-- Include the clickable link for number of likes -->
-              <p>
-                <a href="{{ url_for('message_likes', message_id=message.id) }}">
-                  {{ message.like_count }} likes
-                </a>
-              </p>
-
-              <form action="/messages/add_like/{{ message.id }}" method="POST" class="like-form">
-                {% if message in user.likes %}
-                  <button type="submit" class="btn btn-danger"> Unliked </button>
-                {% else %}
-                  <button type="submit" class="btn btn-primary"> Like </button>
-                {% endif %}
-                <br>
-              </form>
-            </div>
-          </li>
-
-        {% endfor %}
-
-        <div class="user-info">
-          <!-- <h3>{{ user.username }}</h3> -->
-          <p>{{ user.info }}</p>
-        </div>
-
-      </ul>
-    </div>
-  </div>
+        <form action="/messages/add_like/{{ message.id }}" method="POST" class="like-form">
+          {% if message in user.likes %}
+            <button type="submit" class="btn btn-danger"> Unliked </button>
+          {% else %}
+            <button type="submit" class="btn btn-primary"> Like </button>
+          {% endif %}
+          <br>
+        </form>
+      </div>
+    </a>
+  </li>
+{% endfor %}
 {% endblock %}

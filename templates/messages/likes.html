@@ -1,18 +1,13 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
-  <h1>Messages Liked by {{ user.username }}</h1>
+  <h1>Likes</h1>
+  <p>Likes for message: {{ message.text }}</p>
 
-  {% if likes %}
-    <ul>
-      {% for like in likes %}
-        <li>
-          <p>{{ like.message.text }}</p>
-          <p>Liked by: {{ like.user.username }}</p>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>No liked messages found.</p>
-  {% endif %}
+  <ul>
+    {% for like in likes %}
+      {% set user = like.user %}
+      <li>{{ user.username }}</li>
+    {% endfor %}
+  </ul>
 {% endblock %}

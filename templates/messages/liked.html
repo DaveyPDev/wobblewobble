@@ -1,14 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Likes for User: {{ liked_user.username }}</h1>
-  {% if liked_users %}
-    <ul>
-      {% for user in liked_users %}
-        <li>{{ user.username }}</li>
-      {% endfor %}
-    </ul>
+  <h1>Messages Liked by {{ liked_user.username }}</h1>
+  {% if liked_messages %}
+    <div class="card-deck">
+      {% for message in liked_messages %}
+    <div class="card">
+      <div class="card-body">
+       <h5 class="card-title">
+          <a href="{{ url_for('messages_show', message_id=message.id) }}">{{ message.text }}</a>
+       </h5>
+      <p class="card-text">Posted by: {{ message.user.username }}</p>
+    </div>
+  </div>
+{% endfor %}
+    </div>
   {% else %}
-    <p>No likes for this user.</p>
+    <p>No liked messages.</p>
   {% endif %}
 {% endblock %}

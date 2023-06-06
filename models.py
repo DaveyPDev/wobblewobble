@@ -30,7 +30,7 @@ class Follows(db.Model):
 class Likes(db.Model):
     """Mapping user likes to warbles."""
 
-    __tablename__ = 'likes' 
+    __tablename__ = 'likes'
 
     id = db.Column(
         db.Integer,
@@ -50,17 +50,29 @@ class Likes(db.Model):
     likes_count = db.Column(db.Integer, default=0)
     liked_count = db.Column(db.Integer, default=0)
 
-    def increment_likes(self, user):
-        if user.id == self.message.user_id:
-            return
+    def __init__(self, user_id=None, message_id=None):
+       
+        self.user_id = user_id
+        self.message_id = message_id
+        self.liked_count = 0  
+        self.likes_count = 0  
 
+
+
+    def increment_likes(self, user):
+        if user and self.message:
+            if user.id == self.message.user_id:
+                return
+        
         self.likes_count += 1
         self.message.likes_count += 1
         db.session.commit()
 
+
     def increment_liked(self):
+        if self.liked_count is None:
+            self.liked_count = 0
         self.liked_count += 1
-        db.session.commit()
 
 
 class User(db.Model):
@@ -140,7 +152,6 @@ class User(db.Model):
     warbles_count = db.Column(db.Integer, default=0)
 
 
-
     def __repr__(self):
         return f"<User #{self.id}: {self.username}, {self.email}>"
 
@@ -155,6 +166,17 @@ class User(db.Model):
     def has_liked_message(self, message):
         return Likes.query.filter_by(user_id=self.id, message_id=message.id).first() is not None
 
+    def update_warbles_count(self):
+        self.warbles_count = Message.query.filter_by(user_id=self.id).count()
+        db.session.commit()
+
+    def increment_warbles_count(self):
+        self.warbles_count += 1
+        db.session.commit()
+
+    def decrement_warbles_count(self):
+        self.warbles_count -= 1
+        db.session.commit()
 
     @classmethod
     def signup(cls, username, email, password, image_url):
@@ -223,9 +245,16 @@ class Message(db.Model):
         nullable=False,
     )
 
+    original_message_id = db.Column(
+        db.Integer,
+        db.ForeignKey('messages.id', ondelete='CASCADE'),
+        nullable=True
+    )
+
+
     user = db.relationship('User')
 
-    likes = db.relationship('Likes')
+    likes = db.relationship('Likes', backref='message')
 
     def __init__(self, text):
         self.text = text

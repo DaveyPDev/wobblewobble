@@ -247,6 +247,7 @@ def profile():
     
     return render_template('users/edit.html', form=form, warbles_count=warbles_count)
     
+
 @app.route('/users/add_like/<int:message_id>', methods=["POST"])
 def add_like(message_id):
     """Add a like to a message."""
@@ -265,25 +266,31 @@ def add_like(message_id):
         flash("You can't like your own message.", "danger")
         return redirect(request.referrer)
 
-    if msg in g.user.likes:
+    like = Likes.query.filter_by(user_id=g.user.id, message_id=msg.id).first()
+
+    if like:
         g.user.likes.remove(msg)
+        like.increment_liked()  # Call increment_liked method
         db.session.commit()
         flash('Message unliked.', 'danger')
     else:
         g.user.likes.append(msg)
+        like = Likes(user_id=g.user.id, message_id=msg.id)
+        like.increment_likes(g.user)  # Call increment_likes method
         db.session.commit()
         flash('Message liked!', 'success')
 
     return redirect(request.referrer)
 
 
-@app.route('/users/<int:id>/liked')
-def liked(id):
-    user = User.query.get_or_404(id)
-    liked_messages = user.likes
+@app.route('/users/<int:user_id>/liked')
+def liked(user_id):
+    """Show liked messages for a specific user."""
 
-    return render_template('messages/liked.html', liked_messages=liked_messages, liked_user=user)
+    liked_user = User.query.get(user_id)
+    liked_messages = liked_user.likes
 
+    return render_template('messages/liked.html', liked_messages=liked_messages, liked_user=liked_user, message=Message)
 
 
 @app.route('/users/delete', methods=["POST"])
@@ -326,6 +333,8 @@ def messages_add():
         db.session.commit()
 
         return redirect(f'/users/{g.user.id}')
+    
+    g.user.increment_warbles_count()
 
     return render_template('messages/new.html', form=form)
 
@@ -350,7 +359,9 @@ def messages_show(message_id):
     
     like_count = len(msg.likes)
 
-    return render_template('messages/show.html', message=msg, liked=liked, like_count=like_count)
+    user = msg.user
+
+    return render_template('messages/show.html', message=msg, liked=liked, like_count=like_count, user=user)
 
 
 @app.route('/messages/<int:message_id>/like', methods=["POST"])
@@ -380,22 +391,24 @@ def messages_like(message_id):
         db.session.commit()
         flash('Message liked!', 'success')
 
-    return redirect(url_for('messages_show', message_id=message_id))
-
-
-@app.route('/messages/<int:message_id>/likes', methods=["GET"])
-def message_likes(message_id):
-    """Show the users who liked a message."""
-    msg = Message.query.get(message_id)
-
-    if not msg:
-        flash('Message not found.', 'danger')
-        return redirect('/')
-
-    liked_users = User.query.join(Likes).filter(Likes.message_id == message_id).all()
+    likes = g.user.likes
+    user = User.query.get(g.user.id)
+    message = Message.query.get(message_id)
     
-    return render_template('messages/liked.html', liked_users=liked_users, liked_user=msg.user)
+    return render_template('messages/likes.html', likes=likes, user=user, message=message, User=User)
 
+@app.route('/messages/<int:message_id>/likes')
+def message_likes(message_id):
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/login")
+
+    message = Message.query.get(message_id)
+    likes = message.likes
+    user_ids = [like.user_id for like in likes]
+    users = User.query.filter(User.id.in_(user_ids)).all()
+
+    return render_template('messages/likes.html', message=message, likes=likes, users=users)
 
 
 @app.route('/messages/<int:message_id>/delete', methods=["POST"])
@@ -410,6 +423,8 @@ def messages_destroy(message_id):
     
     db.session.delete(msg)
     db.session.commit()
+
+    user.decrement_warbles_count()
 
     return redirect(f'/users/{g.user.id}')
 
@@ -455,7 +470,7 @@ def unlike_warble():
 
 @app.route('/')
 def homepage():
-    """Show homepage:
+    """Show homepage:dc1sx
 
     - anon users: no messages
     - logged in: 100 most recent messages of followed_users

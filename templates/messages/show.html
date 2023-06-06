@@ -31,10 +31,11 @@
             </div>
             <p class="single-message">{{ message.text }}</p>
             <span class="text-muted">{{ message.timestamp.strftime('%d %B %Y') }}</span>
+            <!-- <p><a href="{{ url_for('messages_show', message_id=message.id) }}">Original Post</a></p> -->
             <form id="like-form" action="/users/add_like/{{ message.id }}" method="post">
               <button type="submit" class="btn {% if liked %}btn-primary{% else %}btn-secondary{% endif %}">Like</button>
             </form>
-              <p>{{ like_count }} likes - <a href="{{ url_for('message_likes', message_id=message.id) }}">View Likes</a></p>
+            <p> <a href="{{ url_for('message_likes', message_id=message.id) }}">{{ like_count }} likes</a></p>
           </div>
         </li>
       </ul>
