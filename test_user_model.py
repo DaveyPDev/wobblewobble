@@ -47,7 +47,8 @@ class UserModelTestCase(TestCase):
         u = User(
             email="test@test.com",
             username="testuser",
-            password="HASHED_PASSWORD"
+            password="HASHED_PASSWORD",
+            location='testlocation'
         )
 
         db.session.add(u)
@@ -56,3 +57,48 @@ class UserModelTestCase(TestCase):
         # User should have no messages & no followers
         self.assertEqual(len(u.messages), 0)
         self.assertEqual(len(u.followers), 0)
+
+
+    def test_repr(self):
+        user = User(id=1, username='testuser', email='test@email.com', location='testlocation')
+
+        expected_repr = '<User #1: testuser, test@email.com>'
+
+        self.assertEqual(repr(user), expected_repr)
+
+
+    def test_is_following(self):
+        self.user1 = User()
+        self.user2 = User()
+
+        self.user2.followers.append(self.user1)
+        db.session.commit()
+
+        self.assertTrue(self.user1.is_following(self.user2))
+
+        
+    def test_followed_by(self):
+        self.user1 = User()
+        self.user2 = User()
+
+        self.user1.following.append(self.user2)
+        self.user2.following.append(self.user1)
+
+        self.user1.following.append(self.user2)
+        self.user2.following.append(self.user1)
+
+    def test_user_signup(self):
+        u = User.signup(
+            username="testuser",
+            email="test@test.com",
+            password="HASHED_PASSWORD"
+        )
+
+        db.session.commit()
+
+        self.assertIsNotNone(u)
+        self.assertEqual(u.username, 'testuser')
+        self.assertEqual(u.email, 'test@test.com')
+
+    def tearDown(self) -> None:
+        return super().tearDown()

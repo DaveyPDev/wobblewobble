@@ -1,5 +1,5 @@
 
-when clicking the likes number i need to add it so it shows previously liked comments
+ when clicking the likes number i need to add it so it shows previously liked comments
 that i'm sure i'll figure out
 
 but the allowing two people to like one comment and not break it...
@@ -11,3 +11,15 @@ ideas on how to go about implimenting that
 clicking likes takes you to your likes currently 
 so i'm giving up i've probably spent some 30 hours on these two parts
 
+
+
+
+
+
+viewing users likes to see who liked it
+
+somethings causing an overlaping and not really sure how to go about
+trouble shooting that one
+
+viewing likes is busted
+viewing liked shows messages liked by the self.user and not other users

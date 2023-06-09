@@ -50,31 +50,32 @@ class Likes(db.Model):
     likes_count = db.Column(db.Integer, default=0)
     liked_count = db.Column(db.Integer, default=0)
 
-    def __init__(self, user_id=None, message_id=None):
-       
+    def __init__(self, user_id=None, message_id=None, message=None):
         self.user_id = user_id
         self.message_id = message_id
-        self.liked_count = 0  
-        self.likes_count = 0  
-
+        self.message = message
+        self.liked_count = 0
+        self.likes_count = 0
 
 
     def increment_likes(self, user):
         if user and self.message:
             if user.id == self.message.user_id:
                 return
-        
+
         self.likes_count += 1
-        self.message.likes_count += 1
+
+        if self.message:
+            self.message.likes_count += 1
+
         db.session.commit()
 
 
     def increment_liked(self):
-        if self.liked_count is None:
-            self.liked_count = 0
+
         self.liked_count += 1
 
-
+    
 class User(db.Model):
     """User in the system."""
 
@@ -258,8 +259,7 @@ class Message(db.Model):
 
     def __init__(self, text):
         self.text = text
-        
-
+    
 
 def connect_db(app):
     """Connect this database to provided Flask app.
