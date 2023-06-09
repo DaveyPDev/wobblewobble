@@ -23,3 +23,6 @@ trouble shooting that one
 
 viewing likes is busted
 viewing liked shows messages liked by the self.user and not other users
+
+
+probably should Have downloaded the solution
